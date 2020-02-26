@@ -19,6 +19,10 @@ def createDirGraph(adj):
 	plt.show()
 	return DG
 
+
+# part 2 - BFS
+# input is a directed graph, as created in part 1, 
+# and a starting vertex v
 def bfs(DG, v):
 	# initialize
 	S = {v}
@@ -40,6 +44,9 @@ def bfs(DG, v):
 
 	# return S
 	return S
+
+
+
 
 
 
