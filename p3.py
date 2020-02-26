@@ -49,6 +49,7 @@ def bfs(DG, v):
 
 # same as before, but now also returns the path to a given target
 # or [] if no such path exists
+# used for max flow
 def bfs_with_target(DG, s, t):
 	# initialize
 	visited = set()
@@ -73,6 +74,8 @@ def bfs_with_target(DG, s, t):
 	# t not found
 	return []
 
+# part 3 and 4 - a max flow alg which takes a path-finding search
+# (dijkstra's or BFS) as an argument
 def max_flow(DG, s, t, path_func):
 	R = DG.copy()
 	flow = 0
@@ -110,14 +113,17 @@ def max_flow(DG, s, t, path_func):
 	return flow
 
 
+# test part 1
 print("Displaying graph:")
 DG = createDirGraph([[0,1,1],[0,0,1],[0,0,0]])
 
+# test part 2
 print("Using BFS to find all nodes reachable from node 0:")
 print("Expecting 0, 1, 2")
 S = bfs(DG, 0)
 print(S)
 
+# test part 3 and 4
 print("Creating directed weighted graph from class, max flow should be 30")
 DG2 = nx.DiGraph()
 DG2.add_node(0)
@@ -136,7 +142,7 @@ print(max_flow(DG2, 0, 3, bfs_with_target))
 print("Testing max flow with Dijkstra's:")
 print(max_flow(DG2, 0, 3, nx.dijkstra_path))
 
-
+# part 5 - compare timings and report
 print("Creating a large random directed graph:")
 num_nodes = 120
 DG3 = nx.DiGraph()
