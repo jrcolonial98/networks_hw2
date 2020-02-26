@@ -1,5 +1,7 @@
 import networkx as nx
 import matplotlib.pyplot as plt
+import random
+import time
 
 
 # part 1 - create a directed graph
@@ -71,7 +73,7 @@ def bfs_with_target(DG, s, t):
 	# t not found
 	return []
 
-def max_flow_bfs(DG, s, t):
+def max_flow(DG, s, t, path_func):
 	R = DG.copy()
 	flow = 0
 
@@ -101,19 +103,22 @@ def max_flow_bfs(DG, s, t):
 				R.remove_edge(frm, to)
 		flow = flow + fprime			
 
-		path = bfs_with_target(R, s, t)
+		try:
+			path = path_func(R, s, t)
+		except nx.NetworkXNoPath:
+			path = []
 	return flow
 
 
-print("displaying graph:")
+print("Displaying graph:")
 DG = createDirGraph([[0,1,1],[0,0,1],[0,0,0]])
 
 print("Using BFS to find all nodes reachable from node 0:")
+print("Expecting 0, 1, 2")
 S = bfs(DG, 0)
 print(S)
-print(bfs_with_target(DG, 0, 2))
 
-# directed weighted graph from class, max flow should be 30
+print("Creating directed weighted graph from class, max flow should be 30")
 DG2 = nx.DiGraph()
 DG2.add_node(0)
 DG2.add_node(1)
@@ -124,4 +129,33 @@ DG2.add_edge(0,2,weight=10)
 DG2.add_edge(1,2,weight=30)
 DG2.add_edge(1,3,weight=10)
 DG2.add_edge(2,3,weight=20)
-print(max_flow_bfs(DG2, 0, 3))
+
+print("Testing max flow with BFS:")
+print(max_flow(DG2, 0, 3, bfs_with_target))
+
+print("Testing max flow with Dijkstra's:")
+print(max_flow(DG2, 0, 3, nx.dijkstra_path))
+
+
+print("Creating a large random directed graph:")
+num_nodes = 120
+DG3 = nx.DiGraph()
+for i in range(num_nodes):
+	DG3.add_node(i)
+for i in range(num_nodes):
+	for j in range(i+1, num_nodes):
+		r = random.randint(0,10)
+		if r < 7:
+			wt = random.randint(1,10)
+			DG3.add_edge(i, j, weight=wt)
+print("Done. Now timing max flow with BFS:")
+t1 = time.time()
+print(max_flow(DG3, 0, num_nodes - 1, bfs_with_target))
+t2 = time.time()
+print("Time in seconds: ", t2 - t1)
+
+print("Now timing max flow with Dijkstra's:")
+t1 = time.time()
+print(max_flow(DG3, 0, num_nodes - 1, nx.dijkstra_path))
+t2 = time.time()
+print("Time in seconds: ", t2 - t1)
