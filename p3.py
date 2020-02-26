@@ -143,25 +143,37 @@ print("Testing max flow with Dijkstra's:")
 print(max_flow(DG2, 0, 3, nx.dijkstra_path))
 
 # part 5 - compare timings and report
-print("Creating a large random directed graph:")
-num_nodes = 120
-DG3 = nx.DiGraph()
-for i in range(num_nodes):
-	DG3.add_node(i)
-for i in range(num_nodes):
-	for j in range(i+1, num_nodes):
-		r = random.randint(0,10)
-		if r < 7:
-			wt = random.randint(1,10)
-			DG3.add_edge(i, j, weight=wt)
-print("Done. Now timing max flow with BFS:")
-t1 = time.time()
-print(max_flow(DG3, 0, num_nodes - 1, bfs_with_target))
-t2 = time.time()
-print("Time in seconds: ", t2 - t1)
+print("Part 5 will run on 10 random graphs of 120 nodes, 70% connected.")
+bfs_total = 0
+dij_total = 0
+num_trials = 10
+for k in range(num_trials):
+	print("Creating a large random directed graph:")
+	num_nodes = 120
+	DG3 = nx.DiGraph()
+	for i in range(num_nodes):
+		DG3.add_node(i)
+	for i in range(num_nodes):
+		for j in range(i+1, num_nodes):
+			r = random.randint(0,10)
+			if r < 7:
+				wt = random.randint(1,10)
+				DG3.add_edge(i, j, weight=wt)
+	print("Done. Now timing max flow with BFS:")
+	t1 = time.time()
+	print(max_flow(DG3, 0, num_nodes - 1, bfs_with_target))
+	t2 = time.time()
+	print("Time in seconds: ", t2 - t1)
+	bfs_total += t2 - t1
 
-print("Now timing max flow with Dijkstra's:")
-t1 = time.time()
-print(max_flow(DG3, 0, num_nodes - 1, nx.dijkstra_path))
-t2 = time.time()
-print("Time in seconds: ", t2 - t1)
+	print("Now timing max flow with Dijkstra's:")
+	t1 = time.time()
+	print(max_flow(DG3, 0, num_nodes - 1, nx.dijkstra_path))
+	t2 = time.time()
+	print("Time in seconds: ", t2 - t1)
+	dij_total += t2 - t1
+
+bfs_avg = bfs_total / num_trials
+dij_avg = dij_total / num_trials
+print("\nAverage for BFS:", bfs_avg)
+print("Average for Dijkstra's:", dij_avg)
